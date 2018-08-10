@@ -1979,6 +1979,7 @@ static int mpu6050_i2c_probe(struct i2c_client *client, const struct i2c_device_
 	obj_i2c_data = obj;
 	obj->client = client;
 	/* obj->client->timing = 400; */
+	obj->client->addr = obj->hw->i2c_addr[0];
 
 	new_client = obj->client;
 	i2c_set_clientdata(new_client, obj);

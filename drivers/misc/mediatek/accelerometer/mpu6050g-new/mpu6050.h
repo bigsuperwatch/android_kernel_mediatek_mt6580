@@ -3,7 +3,7 @@
 
 #include <linux/ioctl.h>
 
-#define MPU6050_I2C_SLAVE_ADDR		0xD0
+#define MPU6050_I2C_SLAVE_ADDR		0x68
 
 
 /* MPU6050 Register Map  (Please refer to MPU6050 Specifications) */

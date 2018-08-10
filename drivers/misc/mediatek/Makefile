@@ -13,9 +13,13 @@
 
 #$(call all-subdir-src-or-makefile)
 MTK_PLATFORM := $(subst ",,$(CONFIG_MTK_PLATFORM))
+ARCH_MTK_PROJECT := $(subst ",,$(CONFIG_ARCH_MTK_PROJECT))
+WIITE_BATTERY_PROJECT := $(subst ",,$(KERNEL_WIITE_BATTERY_PROJECT))
 subdir-ccflags-y += -Werror
 subdir-ccflags-y += -I$(srctree)/drivers/misc/mediatek/include
 subdir-ccflags-y += -I$(srctree)/drivers/misc/mediatek/include/mt-plat/$(MTK_PLATFORM)/include
+subdir-ccflags-y += -I$(srctree)/drivers/misc/mediatek/include/mt-plat/$(ARCH_MTK_PROJECT)/include
+subdir-ccflags-y += -I$(srctree)/drivers/misc/mediatek/include/battery/$(WIITE_BATTERY_PROJECT)
 subdir-ccflags-y += -I$(srctree)/drivers/misc/mediatek/include/mt-plat
 subdir-ccflags-y += -I$(srctree)/drivers/mmc/host/mediatek/$(MTK_PLATFORM)
 
@@ -56,7 +60,7 @@ obj-$(CONFIG_CUSTOM_KERNEL_SHAKE_SENSOR)	+= shake_sensor/
 obj-$(CONFIG_CUSTOM_KERNEL_FACE_DOWN_SENSOR)	+= face_down_sensor/
 obj-$(CONFIG_CUSTOM_KERNEL_GESTURE_SENSOR) += gesture/
 obj-$(CONFIG_CUSTOM_KERNEL_PEDOMETER)	+= pedometer/
-obj-$(CONFIG_CUSTOM_KERNEL_HEART)	+= heart_rate_sensor/
+#obj-$(CONFIG_CUSTOM_KERNEL_HEART)	+= heart_rate_sensor/
 obj-$(CONFIG_CUSTOM_KERNEL_TILT_DETECTOR_SENSOR)	+= tilt_detector_sensor/
 obj-$(CONFIG_CUSTOM_KERNEL_WAKE_GESTURE_SENSOR)	+= wake_gesture_sensor/
 obj-$(CONFIG_CUSTOM_KERNEL_GLANCE_GESTURE_SENSOR)	+= glance_gesture_sensor/
