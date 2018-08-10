@@ -1,0 +1,53 @@
+#
+# Touchscreen driver configuration
+#
+if TOUCHSCREEN_MTK_IT7250
+
+config IT7250_TPD_ROTATE_90
+	bool "it7250 for Mediatek package"
+	default n
+	help
+	Say Y here if you have it7250 touch panel TPD_ROTATE_90.
+
+	If unsure, say N.
+
+	To compile this dirver as a module, choose M here: the
+	module will be called.
+
+config IT7250_TPD_ROTATE_180
+	bool "it7250 for Mediatek package"
+	default n
+	help
+	Say Y here if you have it7250 touch panel TPD_ROTATE_180.
+
+	If unsure, say N.
+
+	To compile this dirver as a module, choose M here: the
+	module will be called.
+
+config IT7250_TPD_ROTATE_270
+	bool "it7250 for Mediatek package"
+	default n
+	help
+	Say Y here if you have it7250 touch panel TPD_ROTATE_270.
+
+	If unsure, say N.
+
+	To compile this dirver as a module, choose M here: the
+	module will be called.
+
+config IT7250_AUTO_UPGRADE_SUPPORT
+	bool "it7250 for Mediatek package"
+	default n
+	help
+	Say Y here if you have it7250 touch panel FT_AUTO_UPGRADE_SUPPORT.
+
+	If unsure, say N.
+
+	To compile this dirver as a module, choose M here: the
+	module will be called.
+
+config IT7250_FIRMWARE
+	string "it7250 for Mediatek firmware"
+
+endif
