@@ -988,6 +988,11 @@ LCM_DRIVER *lcm_driver_list[] = {
 #if defined(NT35695_FHD_DSI_VDO_TRULY_NT50358_720P)
 	&nt35695_fhd_dsi_vdo_truly_nt50358_720p_lcm_drv,
 #endif
+
+#if defined(RM67160_400X400_DSI_CMD_OLED)
+	&rm67160_400x400_dsi_cmd_oled_drv,
+#endif
+
 };
 
 unsigned char lcm_name_list[][128] = {
