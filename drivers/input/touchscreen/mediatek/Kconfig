@@ -220,4 +220,16 @@ config TOUCHSCREEN_MTK_IT7250
 	  module will be called.
 
 source "drivers/input/touchscreen/mediatek/it7250/Kconfig"
+
+config TOUCHSCREEN_MTK_FOCALTECH_TS
+	bool "it7250 Touch Core driver"
+	depends on I2C
+	default n
+	help
+	  Say Y here if you have a focaltech touchscreen
+	  connected to your system.
+	  To compile this dirver as a module, choose M here: the
+	  module will be called.
+
+source "drivers/input/touchscreen/mediatek/focaltech_touch/Kconfig"
 endif
