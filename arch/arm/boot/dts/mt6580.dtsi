@@ -765,8 +765,20 @@
 
 		touch: touch@0 {
 			compatible = "mediatek,mt6580-touch";
-			vtouch-supply = <&mt_pmic_vgp1_ldo_reg>;
+			vtouch-supply = <&mt_pmic_vgp2_ldo_reg>;
 		};
+		
+		heart: heart@0 {
+			compatible = "mediatek,Wiite_HRS";
+			vHeart-supply = <&mt_pmic_vgp1_ldo_reg>;
+		};
+		
+		
+		bhy: bhy@0 {
+			compatible = "bst,bhy";
+		};
+		
+		
 		accdet: accdet {
 			compatible = "mediatek,mt6580-accdet";
 		};
