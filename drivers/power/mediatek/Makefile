@@ -13,9 +13,13 @@
 
 
 MTK_PLATFORM := $(subst ",,$(CONFIG_MTK_PLATFORM))
-subdir-ccflags-y += -Werror -I$(srctree)/drivers/misc/mediatek/include
-subdir-ccflags-y += -Werror -I$(srctree)/drivers/misc/mediatek/include/mt-plat/$(MTK_PLATFORM)/include
-subdir-ccflags-y += -Werror -I$(srctree)/drivers/misc/mediatek/include/mt-plat
+ARCH_MTK_PROJECT := $(subst ",,$(CONFIG_ARCH_MTK_PROJECT))
+subdir-ccflags-y += -Werror
+subdir-ccflags-y += -I$(srctree)/drivers/misc/mediatek/include
+subdir-ccflags-y += -I$(srctree)/drivers/misc/mediatek/include/mt-plat/$(MTK_PLATFORM)/include
+subdir-ccflags-y += -I$(srctree)/drivers/misc/mediatek/include/mt-plat/$(ARCH_MTK_PROJECT)/include
+subdir-ccflags-y += -I$(srctree)/drivers/misc/mediatek/include/battery/ZWD452827
+subdir-ccflags-y += -I$(srctree)/drivers/misc/mediatek/include/mt-plat
 
 obj-$(CONFIG_MTK_PUMP_EXPRESS_PLUS_SUPPORT) += mtk_pep_intf.o
 obj-$(CONFIG_MTK_PUMP_EXPRESS_PLUS_20_SUPPORT) += mtk_pep20_intf.o

@@ -22,6 +22,8 @@ ccflags-y += -I$(srctree)/drivers/misc/mediatek/include/mt-plat/$(MTK_PLATFORM)/
 ccflags-y += -I$(srctree)/drivers/misc/mediatek/include/mt-plat
 ccflags-y += -I$(srctree)/drivers/misc/mediatek/base/power/$(MTK_PLATFORM)
 
+subdir-ccflags-y += -I$(srctree)/drivers/mmc/host/mediatek/$(MTK_PLATFORM)
+
 subdir-ccflags-y += -I$(srctree)/drivers/misc/mediatek/hibcore
 obj-$(CONFIG_MMC_MTK) += $(subst ",,$(CONFIG_MTK_PLATFORM))/
 

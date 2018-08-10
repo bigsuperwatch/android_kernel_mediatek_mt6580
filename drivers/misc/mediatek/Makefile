@@ -14,14 +14,14 @@
 #$(call all-subdir-src-or-makefile)
 MTK_PLATFORM := $(subst ",,$(CONFIG_MTK_PLATFORM))
 ARCH_MTK_PROJECT := $(subst ",,$(CONFIG_ARCH_MTK_PROJECT))
-WIITE_BATTERY_PROJECT := $(subst ",,$(KERNEL_WIITE_BATTERY_PROJECT))
 subdir-ccflags-y += -Werror
 subdir-ccflags-y += -I$(srctree)/drivers/misc/mediatek/include
 subdir-ccflags-y += -I$(srctree)/drivers/misc/mediatek/include/mt-plat/$(MTK_PLATFORM)/include
 subdir-ccflags-y += -I$(srctree)/drivers/misc/mediatek/include/mt-plat/$(ARCH_MTK_PROJECT)/include
-subdir-ccflags-y += -I$(srctree)/drivers/misc/mediatek/include/battery/$(WIITE_BATTERY_PROJECT)
+subdir-ccflags-y += -I$(srctree)/drivers/misc/mediatek/include/battery/ZWD452827
 subdir-ccflags-y += -I$(srctree)/drivers/misc/mediatek/include/mt-plat
-subdir-ccflags-y += -I$(srctree)/drivers/mmc/host/mediatek/$(MTK_PLATFORM)
+subdir-ccflags-y += -I$(srctree)/drivers/misc/mediatek/base/power/$(MTK_PLATFORM)
+subdir-ccflags-y += -I$(srctree)/drivers/misc/mediatek/btcvsd
 
 obj-$(CONFIG_MTK_BASE_POWER) += base/
 obj-$(CONFIG_MTK_POWER_GS) += power_gs/
@@ -85,7 +85,7 @@ endif
 obj-$(CONFIG_MTK_LEDS)	+= leds/
 obj-$(CONFIG_CUSTOM_KERNEL_CHARGEPUMP) += chargepump/
 obj-$(CONFIG_MTK_VIBRATOR)	+= vibrator/
-obj-$(CONFIG_MTK_SM100)	+= tc1_interface/vib_drv/
+#obj-$(CONFIG_MTK_SM100)	+= tc1_interface/vib_drv/
 obj-$(CONFIG_MTK_ACCDET)	+= accdet/
 obj-$(CONFIG_MTK_ECCCI_C2K) += c2k_usb/
 obj-y += irtx/

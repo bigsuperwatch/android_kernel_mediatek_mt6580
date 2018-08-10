@@ -19,6 +19,8 @@ ccflags-y += -I$(srctree)/drivers/misc/mediatek/cmdq/v2/$(MTK_PLATFORM) \
              -I$(srctree)/drivers/misc/mediatek/mmp/ \
              -I$(srctree)/drivers/misc/mediatek/mach/$(MTK_PLATFORM)/include
 
+subdir-ccflags-y += -I$(srctree)/drivers/misc/mediatek/cmdq/v2/$(CONFIG_MTK_PLATFORM)
+
 # Enable AEE
 ccflags-y += -DCMDQ_AEE_READY
 

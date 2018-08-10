@@ -41,3 +41,4 @@ else
 	obj-$(CONFIG_ARCH_ELBRUS) += common/
 endif
 
+subdir-ccflags-y += -I$(srctree)/drivers/misc/mediatek/video/$(CONFIG_MTK_PLATFORM) 
