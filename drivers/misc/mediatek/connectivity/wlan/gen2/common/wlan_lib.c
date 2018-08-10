@@ -21,6 +21,26 @@
 ********************************************************************************
 */
 #include "precomp.h"
+#if 1//for wifi addr random  689C5EXXXXXX
+#include <linux/version.h>
+#include <linux/init.h>
+#include <linux/types.h>
+#include <linux/module.h>
+#include <linux/fs.h>
+
+#if LINUX_VERSION_CODE > KERNEL_VERSION(2, 6, 12)
+    #include <linux/uaccess.h>
+#endif
+
+#include "gl_os.h"
+#ifndef CONFIG_X86
+#if defined(CONFIG_HAS_EARLY_SUSPEND)
+    #include <linux/earlysuspend.h>
+#endif
+#endif
+
+#define WIFI_NVRAM_FILE_NAME   "/data/WifiMAC"
+#endif
 #include "mgmt/ais_fsm.h"
 
 /*******************************************************************************
@@ -2444,6 +2464,122 @@ BOOLEAN wlanoidTimeoutCheck(IN P_ADAPTER_T prAdapter, IN PFN_OID_HANDLER_FUNC pf
 	return TRUE;
 }
 
+#if 1//for wifi addr random  689C5EXXXXXX
+
+static int
+write_wifi_file (
+    char *filename,
+    char *buf,
+    ssize_t len,
+    int offset)
+{
+#if CFG_SUPPORT_NVRAM
+    struct file *fd;
+    int retLen = -1;
+
+    mm_segment_t old_fs = get_fs();
+    set_fs(KERNEL_DS);
+
+    fd = filp_open(filename, O_WRONLY|O_CREAT, 0644);
+
+    if(IS_ERR(fd)) {
+       printk("[MT6620][nvram_write] : failed to open!!\n");
+        return -1;
+    }
+    else{
+       printk("[MT6620][nvram_write] : succ to open!!\n");
+    }
+
+    do{
+        if ((fd->f_op == NULL) || (fd->f_op->write == NULL)) {
+           printk("[MT6620][nvram_write] : file can not be write!!\n");
+            break;
+        } /* End of if */
+
+        if (fd->f_pos != offset) {
+            if (fd->f_op->llseek) {
+                if(fd->f_op->llseek(fd, offset, 0) != offset) {
+                   printk("[MT6620][nvram_write] : failed to seek!!\n");
+                    break;
+                }
+            }
+            else {
+                fd->f_pos = offset;
+            }
+        }
+
+        retLen = fd->f_op->write(fd,
+                buf,
+                len,
+                &fd->f_pos);
+
+    } while(FALSE);
+
+    filp_close(fd, NULL);
+
+    set_fs(old_fs);
+
+    printk("nvram_write_wifiAddr retLen:%d\n",retLen);
+    return retLen;
+
+#else // !CFG_SUPPORT_NVRAMS
+
+    return -EIO;
+
+#endif
+}
+
+
+static int read_wifi_file(char *filename, char *buf, ssize_t len, int offset)
+{
+#if CFG_SUPPORT_NVRAM
+	struct file *fd;
+	int retLen = -1;
+
+	mm_segment_t old_fs = get_fs();
+
+	set_fs(KERNEL_DS);
+
+	fd = filp_open(filename, O_RDONLY, 0644);
+
+	if (IS_ERR(fd)) {
+		DBGLOG(INIT, INFO, "[MT6620][nvram_read] : failed to open!!\n");
+		return -1;
+	}
+
+	do {
+		if ((fd->f_op == NULL) || (fd->f_op->read == NULL)) {
+			DBGLOG(INIT, INFO, "[MT6620][nvram_read] : file can not be read!!\n");
+			break;
+		}
+
+		if (fd->f_pos != offset) {
+			if (fd->f_op->llseek) {
+				if (fd->f_op->llseek(fd, offset, 0) != offset) {
+					DBGLOG(INIT, INFO, "[MT6620][nvram_read] : failed to seek!!\n");
+					break;
+				}
+			} else {
+				fd->f_pos = offset;
+			}
+		}
+
+		retLen = fd->f_op->read(fd, buf, len, &fd->f_pos);
+
+	} while (FALSE);
+
+	filp_close(fd, NULL);
+
+	set_fs(old_fs);
+
+	return retLen;
+
+#else /* !CFG_SUPPORT_NVRAM */
+	return -EIO;
+#endif
+}
+
+#endif
 /*----------------------------------------------------------------------------*/
 /*!
 * @brief This function is called to clear any pending OID timeout check
@@ -2480,7 +2616,9 @@ WLAN_STATUS wlanUpdateNetworkAddress(IN P_ADAPTER_T prAdapter)
 	P_WIFI_CMD_T prWifiCmd;
 	P_CMD_BASIC_CONFIG prCmdBasicConfig;
 	UINT_32 u4SysTime;
-
+#if 1// for wifi addr random  689C5EXXXXXX	
+    int retLen;	
+#endif
 	DEBUGFUNC("wlanUpdateNetworkAddress");
 
 	ASSERT(prAdapter);
@@ -2500,11 +2638,28 @@ WLAN_STATUS wlanUpdateNetworkAddress(IN P_ADAPTER_T prAdapter)
 		/* dynamic generate */
 		u4SysTime = kalGetTimeTick();
 
+#if 0 // for wifi addr random  689C5EXXXXXX
 		rMacAddr[0] = 0x00;
 		rMacAddr[1] = 0x08;
 		rMacAddr[2] = 0x22;
 
 		kalMemCopy(&rMacAddr[3], &u4SysTime, 3);
+#else
+
+	if (read_wifi_file(WIFI_NVRAM_FILE_NAME, (char *)&rMacAddr,6,0) != 6){
+		rMacAddr[0] = 0xC4;
+		rMacAddr[1] = 0x56;
+		rMacAddr[2] = 0xFE;
+        kalMemCopy(&rMacAddr[3], &u4SysTime, 3);
+
+        retLen = write_wifi_file(WIFI_NVRAM_FILE_NAME,
+		            (char *)&rMacAddr,
+		            6,
+		            0);
+
+    	printk("after write_wifi_file  = %d \n", retLen);
+	}
+#endif
 	} else {
 #if CFG_SHOW_MACADDR_SOURCE
 		DBGLOG(INIT, INFO, "Using host-supplied MAC address");
@@ -4335,11 +4490,13 @@ WLAN_STATUS wlanCheckSystemConfiguration(IN P_ADAPTER_T prAdapter)
 		if (prRegInfo->ucTxPwrValid == 0)
 			u4ErrCode |= NVRAM_ERROR_INVALID_TXPWR;
 
+
+#if 0// for wifi addr random  689C5EXXXXXX	
 		if (prAdapter->fgIsEmbbededMacAddrValid == FALSE && (IS_BMCAST_MAC_ADDR(prRegInfo->aucMacAddr)
 								     || EQUAL_MAC_ADDR(aucZeroMacAddr,
 										       prRegInfo->aucMacAddr)))
 			u4ErrCode |= NVRAM_ERROR_INVALID_MAC_ADDR;
-
+#endif
 #if CFG_SUPPORT_PWR_LIMIT_COUNTRY
 		if (prAdapter->fgIsPowerLimitTableValid == FALSE)
 			u4ErrCode |= NVRAM_POWER_LIMIT_TABLE_INVALID;
