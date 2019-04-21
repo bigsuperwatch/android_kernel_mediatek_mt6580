@@ -1,0 +1,100 @@
+/dts-v1/;
+
+/include/ "mt6580.dtsi"
+
+&eintc {
+
+	TOUCH_PANEL@5 {
+		compatible = "mediatek, TOUCH_PANEL-eint";
+		interrupt-parent = <&eintc>;
+		interrupts = <5 2>;
+		debounce = <5 0>;
+	};
+
+};
+
+/ {
+
+	SPI@0x1100C000 {
+		compatible = "mediatek,SPI";
+		cell-index = <0x0>;
+		spi-padmacro = <0x0>;
+		reg = <0x1100c000 0x1000>;
+		interrupts = <0x0 0x40 0x8>;
+	};
+
+	memory@80000000 {
+		device_type = "memory";
+		reg = <0 0x80000000 0 0x1E800000>;
+	};
+
+	bus {
+		compatible = "simple-bus";
+		#address-cells = <1>;
+		#size-cells = <1>;
+		ranges = <0 0 0 0xffffffff>;
+	};
+
+    /* chosen */
+    chosen {
+        bootargs = "console=tty0 console=ttyMT0,921600n1 root=/dev/ram initrd=0x84000000,0x400000 loglevel=8";
+		/* fpga may has no lk, we need to specify display info here */
+		/* fb buffer is reserved using this dts by memory node above */
+        atag,videolfb-fb_base = <0x9e800000>;
+        atag,videolfb-islcmfound = <0x00000001>;
+        atag,videolfb-fps = <0x00001770>;
+        atag,videolfb-vramSize = <0x01800000>;
+        atag,videolfb-lcmname = "nt35590_AUO";
+    };
+  /*  start sensor */
+    cust_accel@0 {
+        compatible = "mediatek,MC3410";
+        i2c_num = <0x00000002>;
+        i2c_addr = <0x0000004c 0x00000003 0x00000003 0x00000003>;
+        direction = <0x00000002>;
+        power_id = <0x0000ffff>;
+        power_vol = <0x00000000>;
+        firlen = <0x00000000>;
+        is_batch_supported = <0x00000000>;
+    };
+    cust_alsps@0 {
+        compatible = "mediatek,CM36652";
+        i2c_num = <0x00000002>;
+        i2c_addr = <0x00000060 0x00000003 0x00000003 0x00000003>;
+        polling_mode_ps = <0x00000000>;
+        polling_mode_als = <0x00000001>;
+        power_id = <0x0000ffff>;
+        power_vol = <0x00000000>;
+        als_level = <0x00000000 0x00000443 0x0000218d 0x0000564b 0x00000040 0x0000012f 0x00000bbe 0x00002ee0 0x00004e20 0x00000327 0x00000339 0x0000034a 0x00000360 0x63757374 0x00000012>;
+        als_value = <0x00000000 0x000003ea 0x00001f42 0x00004e20 0x00000003 0x00000003 0x00000003 0x00000003 0x00000002 0x40300000 0x6d656469 0x31000000 0x00000002 0x0000000d 0x00000003 0x00000003>;
+        ps_threshold_high = <0x0000001a>;
+        ps_threshold_low = <0x00000015>;
+        is_batch_supported_ps = <0x00000000>;
+        is_batch_supported_als = <0x00000000>;
+    };
+    cust_mag@0 {
+        compatible = "mediatek,AKM09911";
+        i2c_num = <0x00000002>;
+        i2c_addr = <0x0000000d 0x00000003 0x00000003 0x00000003>;
+        direction = <0x00000004>;
+        power_id = <0x0000ffff>;
+        power_vol = <0x00000000>;
+        is_batch_supported = <0x00000000>;
+    };
+    cust_gyro@0 {
+        compatible = "mediatek,ITG1010";
+        i2c_num = <0x00000002>;
+        i2c_addr = <0x00000068 0x00000003 0x00000003 0x00000003>;
+        direction = <0x00000001>;
+        power_id = <0x0000ffff>;
+        power_vol = <0x00000000>;
+        firlen = <0x00000000>;
+        is_batch_supported = <0x00000000>;
+    };
+
+  /* end sensor */
+
+	mt-extmem@0 {
+		compatible = "mediatek,mt-extmem";
+	};	
+};
